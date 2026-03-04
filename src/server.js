@@ -1,5 +1,10 @@
 import express from "express"
 import movieRoutes from "./routes/movieRoutes.js"
+import { config } from "dotenv";
+import { connectDB, disconnectDB } from "./config/db.js";
+
+config();
+connectDB();
 
 const app = express()
 
@@ -13,4 +18,29 @@ const server = app.listen(
     }
 )
 
-// http://localhost:5001
+//Handle unhandled promise rejections eg database connection errors
+process.on("unhandledRejection", (err) => {
+    console.log("Unhandled Rejection:", err);
+    server.close(async () => {
+        await disconnectDB();
+        process.exit(1);
+    })
+})
+
+//Handle uncaught exceptions
+process.on("uncaughtException", async (err) => {
+    console.log("Uncaught Exception:", err);
+    server.close(async () => {
+        await disconnectDB();
+        process.exit(1);
+    })
+})
+
+// Gracefull shutdomn
+process.on("SIGTERM", async () => {
+    console.log("SIGSTERM received, shutting down gracefully");
+    server.close(async () => {
+        await disconnectDB();
+        process.exit(0);
+    })
+})
