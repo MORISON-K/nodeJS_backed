@@ -18,6 +18,7 @@ app.use("movies", movieRoutes);
 app.use("/auth", authRoutes);
 
 
+
 const PORT = 5001;
 const server = app.listen(
     PORT, () => {
