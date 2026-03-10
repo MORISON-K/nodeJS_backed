@@ -12,3 +12,8 @@ npm i @prisma/client
 
  # Generate types for each table you make
  npx prisma generate
+
+ # use bcryptjs for password hashing
+
+
+ 1:17
